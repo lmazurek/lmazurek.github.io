@@ -28,8 +28,9 @@ class App extends Component {
       })
       .then(({ data }) => {
         console.log('data', data);
+
         this.setState({
-          prs: data
+          prs: data.filter(event => event.type === 'PullRequestEvent' && event.payload.pull_request.state === 'open')
         });
       })
       .catch(err => console.log('oh no!', err));
