@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { username, repositoryName, prApiUrl } from './constants';
+import { PrLink } from './components/PrLink';
 import './App.css';
 
 class App extends Component {
@@ -87,7 +88,16 @@ class App extends Component {
         <div>
           <strong>{this.state.username}</strong> pull requests:
         </div>
-        {this.state.prs.map(pr => <p key={pr.id}>{pr.number}</p>)}
+        <ul>
+          {this.state.prs.map(pr => (
+            <PrLink
+              prNumber={pr.payload.number}
+              createdAt={pr.created_at}
+              updatedAt={pr.payload.pull_request.updated_at}
+              key={pr.id}
+            />
+          ))}
+        </ul>
       </div>
     );
   }
