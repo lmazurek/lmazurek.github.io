@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import './App.css';
 
-const prApiUrl = ({ username, repositoryName }) =>
-  `https://api.github.com/repos/${username}/${repositoryName}/pulls`;
+import { username, repositoryName, prApiUrl } from './constants';
+import './App.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // username: 'jaacoocrowdin',
-      username: 'lmazurek',
-      repositoryName: 'test',
+      username,
+      repositoryName,
       token: null,
       tokenInput: '',
       prs: []
@@ -21,7 +19,6 @@ class App extends Component {
     this.fetchPrs = this.fetchPrs.bind(this);
   }
 
-  // the api request function
   fetchApi({ url, token }) {
     axios
       .get(url, {
@@ -29,9 +26,7 @@ class App extends Component {
           Authorization: `token ${token}`
         }
       })
-      // .then(res => res)
       .then(({ data }) => {
-        // update state with API data
         console.log('data', data);
         this.setState({
           prs: data
