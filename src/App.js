@@ -15,9 +15,6 @@ class App extends Component {
       tokenInput: '',
       prs: []
     };
-    this.handleTokenInputChange = this.handleTokenInputChange.bind(this);
-    this.saveToken = this.saveToken.bind(this);
-    this.fetchPrs = this.fetchPrs.bind(this);
   }
 
   fetchApi({ url, token }) {
@@ -31,45 +28,55 @@ class App extends Component {
         console.log('data', data);
 
         this.setState({
-          prs: data.filter(event => event.type === 'PullRequestEvent' && event.payload.pull_request.state === 'open')
+          prs: data.filter(
+            event =>
+              event.type === 'PullRequestEvent' && event.payload.pull_request.state === 'open'
+          )
         });
       })
       .catch(err => console.log('oh no!', err));
   }
-  handleTokenInputChange(event) {
+  handleTokenInputChange = event => {
     const tokenInput = event.target.value;
     this.setState({ tokenInput });
-  }
-  fetchPrs() {
+  };
+  handleOpenChangeTokenForm = event => {
+    this.setState({ token: null });
+  };
+  fetchPrs = () => {
     const { username, repositoryName } = this.state;
     const token = this.getToken.call(this);
     const url = prApiUrl({ username, repositoryName });
     this.fetchApi({ url, token });
-  }
-  saveToken() {
+  };
+  saveToken = () => {
     if (this.state.tokenInput === '') {
       return;
     }
     const { tokenInput } = this.state;
-    this.setState({ token: tokenInput, tokenInput: '' });
-  }
+    this.setState({ token: tokenInput, tokenInput: '' }, this.fetchPrs);
+  };
   getToken() {
     return this.state.token || localStorage.getItem('token');
   }
   componentDidMount() {
     const token = this.getToken.call(this);
     this.setState({ token });
-    console.log('token', token);
     token && this.fetchPrs();
   }
   componentDidUpdate(prevProps, prevState) {
     // update token if it was changed
     if (prevState.token !== this.state.token) {
-      localStorage.setItem('token', this.state.token);
+      if (this.state.token) {
+        localStorage.setItem('token', this.state.token);
+      } else {
+        localStorage.removeItem('token');
+      }
     }
   }
   render() {
     const hasToken = this.state.token !== null;
+    const maskedToken = hasToken ? this.state.token.replace(/.+([\w]{4})$/i, '$1') : '';
     return (
       <div className="App">
         {!hasToken && (
@@ -79,25 +86,34 @@ class App extends Component {
               value={this.state.tokenInput}
               onChange={this.handleTokenInputChange}
             />
-            <button onClick={this.saveToken}>set token</button>
+            <button onClick={this.saveToken}>Set token</button>
           </div>
         )}
-        <div>
-          <button onClick={this.fetchPrs}>fetch PRs</button>
-        </div>
-        <div>
-          <strong>{this.state.username}</strong> pull requests:
-        </div>
-        <ul>
-          {this.state.prs.map(pr => (
-            <PrLink
-              prNumber={pr.payload.number}
-              createdAt={pr.created_at}
-              updatedAt={pr.payload.pull_request.updated_at}
-              key={pr.id}
-            />
-          ))}
-        </ul>
+        {hasToken && (
+          <div>
+            Using Token ending with ****{maskedToken}{' '}
+            <button onClick={this.handleOpenChangeTokenForm} style={{backgroundColor:'red',color:'white'}}>Change token</button>
+            <button onClick={this.fetchPrs}>Fetch PRs</button>
+          </div>
+        )}
+        {hasToken && (
+          <div>
+            <hr />
+            <div>
+              <strong>{this.state.username}</strong> pull requests:
+            </div>
+            <ul>
+              {this.state.prs.map(pr => (
+                <PrLink
+                  prNumber={pr.payload.number}
+                  createdAt={pr.created_at}
+                  updatedAt={pr.payload.pull_request.updated_at}
+                  key={pr.id}
+                />
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     );
   }
