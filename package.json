@@ -2,6 +2,7 @@
   "name": "pr-watch",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://lmazurek.github.io/pr-watch",
   "dependencies": {
     "axios": "^0.17.1",
     "react": "^16.2.0",
@@ -9,9 +10,14 @@
     "react-scripts": "1.1.0"
   },
   "scripts": {
+    "predeploy": "react-scripts build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "gh-pages": "^1.1.0"
   }
 }
