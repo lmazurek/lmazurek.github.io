@@ -28,10 +28,7 @@ class App extends Component {
         console.log('data', data);
 
         this.setState({
-          prs: data.filter(
-            event =>
-              event.type === 'PullRequestEvent' && event.payload.pull_request.state === 'open'
-          )
+          prs: data.filter( pr => pr.user.login === username )
         });
       })
       .catch(err => console.log('oh no!', err));
@@ -44,9 +41,9 @@ class App extends Component {
     this.setState({ token: null });
   };
   fetchPrs = () => {
-    const { username, repositoryName } = this.state;
+    const { repositoryName } = this.state;
     const token = this.getToken.call(this);
-    const url = prApiUrl({ username, repositoryName });
+    const url = prApiUrl({ repositoryName });
     this.fetchApi({ url, token });
   };
   saveToken = () => {
@@ -105,9 +102,9 @@ class App extends Component {
             <ul>
               {this.state.prs.map(pr => (
                 <PrLink
-                  prNumber={pr.payload.number}
+                  prNumber={pr.number}
                   createdAt={pr.created_at}
-                  updatedAt={pr.payload.pull_request.updated_at}
+                  updatedAt={pr.updated_at}
                   key={pr.id}
                 />
               ))}
