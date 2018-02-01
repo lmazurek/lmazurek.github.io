@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { username, repositoryName, prApiUrl } from './constants';
+import { TokenForm } from './components/TokenForm';
 import { PrsList } from './components/PrsList';
 import { MaskedToken } from './components/MaskedToken';
 import './App.css';
@@ -29,7 +30,7 @@ class App extends Component {
         console.log('data', data);
 
         this.setState({
-          prs: data.filter( pr => pr.user.login === username )
+          prs: data.filter(pr => pr.user.login === username)
         });
       })
       .catch(err => console.log('oh no!', err));
@@ -74,18 +75,15 @@ class App extends Component {
   }
   render() {
     const hasToken = this.state.token !== null;
-    
+
     return (
       <div className="App">
         {!hasToken && (
-          <div>
-            <input
-              type="text"
-              value={this.state.tokenInput}
-              onChange={this.handleTokenInputChange}
-            />
-            <button onClick={this.saveToken}>Set token</button>
-          </div>
+          <TokenForm
+            tokenInput={this.state.tokenInput}
+            handleChange={this.handleTokenInputChange}
+            save={this.saveToken}
+          />
         )}
         {hasToken && (
           <div>
