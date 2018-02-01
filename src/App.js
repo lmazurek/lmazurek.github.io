@@ -78,7 +78,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        { hasToken ? (
+        {hasToken ? (
           <ActionsBar
             token={this.state.token}
             handleOpenTokenForm={this.handleOpenChangeTokenForm}
@@ -90,16 +90,9 @@ class App extends Component {
             handleChange={this.handleTokenInputChange}
             save={this.saveToken}
           />
-        ) }
-        <hr />
-        {hasToken && (
-          <div>
-            <p>
-              <strong>{this.state.username}</strong> pull requests:
-            </p>
-            <PrsList prs={this.state.prs} />
-          </div>
         )}
+        <hr />
+        {hasToken && <PrsList username={this.state.username} prs={this.state.prs} />}
       </div>
     );
   }
