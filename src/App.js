@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { username, repositoryName, prApiUrl } from './constants';
-import { PrLink } from './components/PrLink';
+import { PrsList } from './components/PrsList';
 import { MaskedToken } from './components/MaskedToken';
 import './App.css';
 
@@ -99,23 +99,13 @@ class App extends Component {
             <button onClick={this.fetchPrs}>Fetch PRs</button>
           </div>
         )}
+        <hr />
         {hasToken && (
           <div>
-            <hr />
-            <div>
+            <p>
               <strong>{this.state.username}</strong> pull requests:
-            </div>
-            <ul>
-              {this.state.prs.map(pr => (
-                <PrLink
-                  prNumber={pr.number}
-                  createdAt={pr.created_at}
-                  updatedAt={pr.updated_at}
-                  key={pr.id}
-                />
-              ))}
-              { this.state.prs.length === 0 && <li>No active PRs <br />(probably all translations are merged)</li> }
-            </ul>
+            </p>
+            <PrsList prs={this.state.prs} />
           </div>
         )}
       </div>
