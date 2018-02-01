@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import { username, repositoryName, prApiUrl } from './constants';
 import { PrLink } from './components/PrLink';
+import { MaskedToken } from './components/MaskedToken';
 import './App.css';
 
 class App extends Component {
@@ -73,7 +74,7 @@ class App extends Component {
   }
   render() {
     const hasToken = this.state.token !== null;
-    const maskedToken = hasToken ? this.state.token.replace(/.+([\w]{4})$/i, '$1') : '';
+    
     return (
       <div className="App">
         {!hasToken && (
@@ -88,8 +89,13 @@ class App extends Component {
         )}
         {hasToken && (
           <div>
-            Using Token ending with ****{maskedToken}{' '}
-            <button onClick={this.handleOpenChangeTokenForm} style={{backgroundColor:'red',color:'white'}}>Change token</button>
+            Using Token ending with <MaskedToken token={this.state.token} />{' '}
+            <button
+              onClick={this.handleOpenChangeTokenForm}
+              style={{ backgroundColor: 'red', color: 'white' }}
+            >
+              Change token
+            </button>
             <button onClick={this.fetchPrs}>Fetch PRs</button>
           </div>
         )}
@@ -108,6 +114,7 @@ class App extends Component {
                   key={pr.id}
                 />
               ))}
+              { this.state.prs.length === 0 && <li>No active PRs <br />(probably all translations are merged)</li> }
             </ul>
           </div>
         )}
