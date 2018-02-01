@@ -3,8 +3,8 @@ import axios from 'axios';
 
 import { username, repositoryName, prApiUrl } from './constants';
 import { TokenForm } from './components/TokenForm';
+import { ActionsBar } from './components/ActionsBar';
 import { PrsList } from './components/PrsList';
-import { MaskedToken } from './components/MaskedToken';
 import './App.css';
 
 class App extends Component {
@@ -78,25 +78,19 @@ class App extends Component {
 
     return (
       <div className="App">
-        {!hasToken && (
+        { hasToken ? (
+          <ActionsBar
+            token={this.state.token}
+            handleOpenTokenForm={this.handleOpenChangeTokenForm}
+            fetchPrs={this.fetchPrs}
+          />
+        ) : (
           <TokenForm
             tokenInput={this.state.tokenInput}
             handleChange={this.handleTokenInputChange}
             save={this.saveToken}
           />
-        )}
-        {hasToken && (
-          <div>
-            Using Token ending with <MaskedToken token={this.state.token} />{' '}
-            <button
-              onClick={this.handleOpenChangeTokenForm}
-              style={{ backgroundColor: 'red', color: 'white' }}
-            >
-              Change token
-            </button>
-            <button onClick={this.fetchPrs}>Fetch PRs</button>
-          </div>
-        )}
+        ) }
         <hr />
         {hasToken && (
           <div>
