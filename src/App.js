@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import axios from 'axios';
 
 import { username, repositoryName, prApiUrl } from './constants';
@@ -7,7 +8,7 @@ import { ActionsBar } from './components/ActionsBar';
 import { PrsList } from './components/PrsList';
 import './App.css';
 
-class App extends Component {
+class AppUnwrapped extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,4 +99,11 @@ class App extends Component {
   }
 }
 
+export { AppUnwrapped };
+
+const mapStateToProps = state => ({
+  token: state.token,
+});
+
+const App = connect(mapStateToProps, null)(AppUnwrapped);
 export default App;
